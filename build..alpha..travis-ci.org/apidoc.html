@@ -1,0 +1,416 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/jasondavies/bloomfilter.js"
+
+    >bloomfilter (v0.0.16)</a>
+</h1>
+<h4>Fast bloom filter in JavaScript.</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.bloomfilter">module bloomfilter</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bloomfilter.BloomFilter">
+            function <span class="apidocSignatureSpan">bloomfilter.</span>BloomFilter
+            <span class="apidocSignatureSpan">(m, k)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bloomfilter.fnv_1a">
+            function <span class="apidocSignatureSpan">bloomfilter.</span>fnv_1a
+            <span class="apidocSignatureSpan">(v)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bloomfilter.fnv_1a_b">
+            function <span class="apidocSignatureSpan">bloomfilter.</span>fnv_1a_b
+            <span class="apidocSignatureSpan">(a)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">bloomfilter.</span>BloomFilter.prototype</span>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.bloomfilter.BloomFilter">module bloomfilter.BloomFilter</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bloomfilter.BloomFilter.BloomFilter">
+            function <span class="apidocSignatureSpan">bloomfilter.</span>BloomFilter
+            <span class="apidocSignatureSpan">(m, k)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.bloomfilter.BloomFilter.prototype">module bloomfilter.BloomFilter.prototype</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bloomfilter.BloomFilter.prototype.add">
+            function <span class="apidocSignatureSpan">bloomfilter.BloomFilter.prototype.</span>add
+            <span class="apidocSignatureSpan">(v)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bloomfilter.BloomFilter.prototype.locations">
+            function <span class="apidocSignatureSpan">bloomfilter.BloomFilter.prototype.</span>locations
+            <span class="apidocSignatureSpan">(v)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bloomfilter.BloomFilter.prototype.size">
+            function <span class="apidocSignatureSpan">bloomfilter.BloomFilter.prototype.</span>size
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.bloomfilter.BloomFilter.prototype.test">
+            function <span class="apidocSignatureSpan">bloomfilter.BloomFilter.prototype.</span>test
+            <span class="apidocSignatureSpan">(v)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.bloomfilter" id="apidoc.module.bloomfilter">module bloomfilter</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.bloomfilter.BloomFilter" id="apidoc.element.bloomfilter.BloomFilter">
+        function <span class="apidocSignatureSpan">bloomfilter.</span>BloomFilter
+        <span class="apidocSignatureSpan">(m, k)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function BloomFilter(m, k) {
+  var a;
+  if (typeof m !== &#x22;number&#x22;) a = m, m = a.length * 32;
+
+  var n = Math.ceil(m / 32),
+      i = -1;
+  this.m = m = n * 32;
+  this.k = k;
+
+  if (typedArrays) {
+    var kbytes = 1 &#x3c;&#x3c; Math.ceil(Math.log(Math.ceil(Math.log(m) / Math.LN2 / 8)) / Math.LN2),
+        array = kbytes === 1 ? Uint8Array : kbytes === 2 ? Uint16Array : Uint32Array,
+        kbuffer = new ArrayBuffer(kbytes * k),
+        buckets = this.buckets = new Int32Array(n);
+    if (a) while (++i &#x3c; n) buckets[i] = a[i];
+    this._locations = new array(kbuffer);
+  } else {
+    var buckets = this.buckets = [];
+    if (a) while (++i &#x3c; n) buckets[i] = a[i];
+    else while (++i &#x3c; n) buckets[i] = 0;
+    this._locations = [];
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bloomfilter.fnv_1a" id="apidoc.element.bloomfilter.fnv_1a">
+        function <span class="apidocSignatureSpan">bloomfilter.</span>fnv_1a
+        <span class="apidocSignatureSpan">(v)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function fnv_1a(v) {
+  var a = 2166136261;
+  for (var i = 0, n = v.length; i &#x3c; n; ++i) {
+    var c = v.charCodeAt(i),
+        d = c &#x26; 0xff00;
+    if (d) a = fnv_multiply(a ^ d &#x3e;&#x3e; 8);
+    a = fnv_multiply(a ^ c &#x26; 0xff);
+  }
+  return fnv_mix(a);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bloomfilter.fnv_1a_b" id="apidoc.element.bloomfilter.fnv_1a_b">
+        function <span class="apidocSignatureSpan">bloomfilter.</span>fnv_1a_b
+        <span class="apidocSignatureSpan">(a)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function fnv_1a_b(a) {
+  return fnv_mix(fnv_multiply(a));
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.bloomfilter.BloomFilter" id="apidoc.module.bloomfilter.BloomFilter">module bloomfilter.BloomFilter</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.bloomfilter.BloomFilter.BloomFilter" id="apidoc.element.bloomfilter.BloomFilter.BloomFilter">
+        function <span class="apidocSignatureSpan">bloomfilter.</span>BloomFilter
+        <span class="apidocSignatureSpan">(m, k)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function BloomFilter(m, k) {
+  var a;
+  if (typeof m !== &#x22;number&#x22;) a = m, m = a.length * 32;
+
+  var n = Math.ceil(m / 32),
+      i = -1;
+  this.m = m = n * 32;
+  this.k = k;
+
+  if (typedArrays) {
+    var kbytes = 1 &#x3c;&#x3c; Math.ceil(Math.log(Math.ceil(Math.log(m) / Math.LN2 / 8)) / Math.LN2),
+        array = kbytes === 1 ? Uint8Array : kbytes === 2 ? Uint16Array : Uint32Array,
+        kbuffer = new ArrayBuffer(kbytes * k),
+        buckets = this.buckets = new Int32Array(n);
+    if (a) while (++i &#x3c; n) buckets[i] = a[i];
+    this._locations = new array(kbuffer);
+  } else {
+    var buckets = this.buckets = [];
+    if (a) while (++i &#x3c; n) buckets[i] = a[i];
+    else while (++i &#x3c; n) buckets[i] = 0;
+    this._locations = [];
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.bloomfilter.BloomFilter.prototype" id="apidoc.module.bloomfilter.BloomFilter.prototype">module bloomfilter.BloomFilter.prototype</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.bloomfilter.BloomFilter.prototype.add" id="apidoc.element.bloomfilter.BloomFilter.prototype.add">
+        function <span class="apidocSignatureSpan">bloomfilter.BloomFilter.prototype.</span>add
+        <span class="apidocSignatureSpan">(v)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">add = function (v) {
+  var l = this.locations(v + &#x22;&#x22;),
+      k = this.k,
+      buckets = this.buckets;
+  for (var i = 0; i &#x3c; k; ++i) buckets[Math.floor(l[i] / 32)] |= 1 &#x3c;&#x3c; (l[i] % 32);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+var bloom = new BloomFilter(
+  32 * 256, // number of bits to allocate.
+  16        // number of hash functions.
+);
+
+// Add some elements to the filter.
+bloom.<span class="apidocCodeKeywordSpan">add</span>(&#x22;foo&#x22;);
+bloom.add(&#x22;bar&#x22;);
+
+// Test if an item is in our filter.
+// Returns true if an item is probably in the set,
+// or false if an item is definitely not in the set.
+bloom.test(&#x22;foo&#x22;);
+bloom.test(&#x22;bar&#x22;);
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bloomfilter.BloomFilter.prototype.locations" id="apidoc.element.bloomfilter.BloomFilter.prototype.locations">
+        function <span class="apidocSignatureSpan">bloomfilter.BloomFilter.prototype.</span>locations
+        <span class="apidocSignatureSpan">(v)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">locations = function (v) {
+  var k = this.k,
+      m = this.m,
+      r = this._locations,
+      a = fnv_1a(v),
+      b = fnv_1a_b(a),
+      x = a % m;
+  for (var i = 0; i &#x3c; k; ++i) {
+    r[i] = x &#x3c; 0 ? (x + m) : x;
+    x = (x + b) % m;
+  }
+  return r;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+    r[i] = x &#x3c; 0 ? (x + m) : x;
+    x = (x + b) % m;
+  }
+  return r;
+};
+
+BloomFilter.prototype.add = function(v) {
+  var l = this.<span class="apidocCodeKeywordSpan">locations</span>(v + &#x22;&#x22;),
+      k = this.k,
+      buckets = this.buckets;
+  for (var i = 0; i &#x3c; k; ++i) buckets[Math.floor(l[i] / 32)] |= 1 &#x3c;&#x3c; (l[i] % 32);
+};
+
+BloomFilter.prototype.test = function(v) {
+  var l = this.locations(v + &#x22;&#x22;),
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bloomfilter.BloomFilter.prototype.size" id="apidoc.element.bloomfilter.BloomFilter.prototype.size">
+        function <span class="apidocSignatureSpan">bloomfilter.BloomFilter.prototype.</span>size
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">size = function () {
+  var buckets = this.buckets,
+      bits = 0;
+  for (var i = 0, n = buckets.length; i &#x3c; n; ++i) bits += popcnt(buckets[i]);
+  return -this.m * Math.log(1 - bits / this.m) / this.k;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.bloomfilter.BloomFilter.prototype.test" id="apidoc.element.bloomfilter.BloomFilter.prototype.test">
+        function <span class="apidocSignatureSpan">bloomfilter.BloomFilter.prototype.</span>test
+        <span class="apidocSignatureSpan">(v)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">test = function (v) {
+  var l = this.locations(v + &#x22;&#x22;),
+      k = this.k,
+      buckets = this.buckets;
+  for (var i = 0; i &#x3c; k; ++i) {
+    var b = l[i];
+    if ((buckets[Math.floor(b / 32)] &#x26; (1 &#x3c;&#x3c; (b % 32))) === 0) {
+      return false;
+    }
+  }
+  return true;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+// Add some elements to the filter.
+bloom.add(&#x22;foo&#x22;);
+bloom.add(&#x22;bar&#x22;);
+
+// Test if an item is in our filter.
+// Returns true if an item is probably in the set,
+// or false if an item is definitely not in the set.
+bloom.<span class="apidocCodeKeywordSpan">test</span>(&#x22;foo&#x22;);
+bloom.test(&#x22;bar&#x22;);
+bloom.test(&#x22;blah&#x22;);
+
+// Serialisation. Note that bloom.buckets may be a typed array,
+// so we convert to a normal array first.
+var array = [].slice.call(bloom.buckets),
+    json = JSON.stringify(array);
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
